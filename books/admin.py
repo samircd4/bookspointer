@@ -2,9 +2,10 @@ from unfold.admin import ModelAdmin  # use Unfold's ModelAdmin
 from .models import Book, AppUser
 # from unfold.sites import UnfoldAdminSite
 from django.contrib import admin 
+from django.utils.html import format_html
 
 class BookAdmin(ModelAdmin):
-    list_display = ('book_id', 'title', 'author', 'reviewed_by_shraiya', 'category', 'category_id', 'is_posted', 'book_link')
+    list_display = ('book_id', 'title', 'author', 'reviewed_by_shraiya', 'category', 'category_id', 'is_posted', 'book_link_display')
     search_fields = ('title', 'author', 'category')
     list_editable = ('reviewed_by_shraiya','category_id')
     
@@ -12,6 +13,11 @@ class BookAdmin(ModelAdmin):
     attrs = {
         "category": {"td": {"style": "min-width: 600px;"}}
     }
+    def book_link_display(self, obj):
+        return format_html(
+            "<a href='{url}' target='_blank' style='background:#9546ddd9;text-align:center;padding:6px;border-radius:5px;font-size:14px'>View Book</a>", url=obj.book_link
+        )
+    book_link_display.short_description = "Book Link"
     
 class AppUserAdmin(ModelAdmin):
     list_display = ('first_name', 'last_name', 'email', 'password', 'has_profile_image', 'is_verified')
