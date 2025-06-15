@@ -1,5 +1,5 @@
 from unfold.admin import ModelAdmin  # use Unfold's ModelAdmin
-from .models import Book, AppUser
+from .models import Book, AppUser, Author
 # from unfold.sites import UnfoldAdminSite
 from django.contrib import admin 
 from django.utils.html import format_html
@@ -11,7 +11,7 @@ class BookAdmin(ModelAdmin):
     
     # Add column attributes for width
     attrs = {
-        "category": {"td": {"style": "min-width: 600px;"}}
+        "category_id": {"td": {"style": "min-width: 300px;"}}
     }
     def book_link_display(self, obj):
         return format_html(
@@ -25,6 +25,11 @@ class AppUserAdmin(ModelAdmin):
     search_fields = ('first_name', 'last_name', 'email')
 
 
+class AuthorAdmin(ModelAdmin):
+    list_display = ('author_id', 'author_name', 'author_link')
+    search_fields = ('author_id', 'author_name')
+
+
 
 # class CustomAdminSite(UnfoldAdminSite):
 #     site_header = "Sarker Book Admin"
@@ -36,3 +41,4 @@ class AppUserAdmin(ModelAdmin):
 # Register your models to the custom site:
 admin.site.register(Book, BookAdmin)
 admin.site.register(AppUser, AppUserAdmin)
+admin.site.register(Author, AuthorAdmin)

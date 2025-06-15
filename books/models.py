@@ -30,4 +30,12 @@ class AppUser(models.Model):
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
+
+
+class Author(models.Model):
+    author_id = models.CharField(max_length=25, primary_key=True)
+    author_name = models.CharField(max_length=255)
+    author_link = models.CharField(max_length=500)
     
+    def __str__(self):
+        return f'{self.author_id}'
