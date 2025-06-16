@@ -5,8 +5,8 @@ from django.contrib import admin
 from django.utils.html import format_html
 
 class BookAdmin(ModelAdmin):
-    list_display = ('book_id', 'title', 'author', 'reviewed_by_shraiya', 'category', 'category_id', 'is_posted', 'book_link_display')
-    search_fields = ('title', 'author', 'category')
+    list_display = ('title', 'author', 'author_id', 'reviewed_by_shraiya', 'category', 'category_id', 'is_posted', 'book_link_display')
+    search_fields = ('title', 'author', 'category', 'author_id')
     list_editable = ('reviewed_by_shraiya','category_id')
     
     # Add column attributes for width
@@ -26,7 +26,7 @@ class AppUserAdmin(ModelAdmin):
 
 
 class AuthorAdmin(ModelAdmin):
-    list_display = ('author_id', 'author_name', 'author_link')
+    list_display = ('author_id', 'author_name', 'is_scraped', 'author_link')
     search_fields = ('author_id', 'author_name')
 
 
