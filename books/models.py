@@ -2,7 +2,7 @@ from django.conf import settings
 from django.db import models
 
 class Book(models.Model):
-    book_id = models.CharField(max_length=10,primary_key=True)
+    book_id = models.AutoField(primary_key=True)
     title = models.CharField(max_length=255, unique=True)
     reviewed_by_shraiya = models.BooleanField(default=False)
     author = models.CharField(max_length=255, blank=True, null=True)
@@ -33,15 +33,15 @@ class AppUser(models.Model):
 
 
 class Author(models.Model):
+    id = models.AutoField(primary_key=True)
+    author_id = models.CharField(max_length=25)  # just a regular field
+    author_name = models.CharField(max_length=255)
+    author_link = models.CharField(max_length=500)
     IS_SCRAPED = [
         ('yes', 'Yes'),
         ('no', 'No'),
     ]
-    
-    author_id = models.CharField(max_length=25, primary_key=True)
-    author_name = models.CharField(max_length=255)
-    author_link = models.CharField(max_length=500)
     is_scraped = models.CharField(max_length=5, choices=IS_SCRAPED, default='no')
-    
+
     def __str__(self):
         return f'{self.author_id}'

@@ -70,20 +70,21 @@ WSGI_APPLICATION = 'bookapi.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
-# Replace the SQLite DATABASES configuration with PostgreSQL:
 DATABASES = {
-    'default': dj_database_url.config(
-        # Replace this value with your local database's connection string.
-        default='postgresql://bookspointer_user:fLQHXlFrCqbVeHVxoNIdmhY0MlW96RaT@dpg-d16tr58dl3ps739r85i0-a.oregon-postgres.render.com/bookspointer',
-        conn_max_age=600
-    )
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
 }
+# Replace the SQLite DATABASES configuration with PostgreSQL:
+# DATABASES = {
+#     'default': dj_database_url.config(
+#         # Replace this value with your local database's connection string.
+#         default='postgresql://bookspointer_user:fLQHXlFrCqbVeHVxoNIdmhY0MlW96RaT@dpg-d16tr58dl3ps739r85i0-a.oregon-postgres.render.com/bookspointer',
+#         conn_max_age=600
+#     )
+# }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
