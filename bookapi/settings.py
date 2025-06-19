@@ -16,9 +16,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv('DEBUG')
+DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = ['bookspointer.onrender.com','https://bookspointer.onrender.com','127.0.0.1', 'localhost']
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '147.93.18.51', 'dev.bookspointer.com']
 
 
 # Application definition
@@ -35,6 +39,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'books',
 ]
+
+SECURE_SSL_REDIRECT = False
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

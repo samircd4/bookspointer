@@ -1,5 +1,5 @@
 from unfold.admin import ModelAdmin  # use Unfold's ModelAdmin
-from .models import Book, AppUser, Author
+from .models import Book, AppUser, Author, Category
 # from unfold.sites import UnfoldAdminSite
 from django.contrib import admin 
 from django.utils.html import format_html
@@ -29,7 +29,9 @@ class AuthorAdmin(ModelAdmin):
     list_display = ('author_id', 'author_name', 'is_scraped', 'author_link')
     search_fields = ('author_id', 'author_name')
 
-
+class CategoryAdmin(ModelAdmin):
+    list_display = ('category_id', 'category_name')
+    search_fields = ['category_id']
 
 # class CustomAdminSite(UnfoldAdminSite):
 #     site_header = "Sarker Book Admin"
@@ -42,3 +44,4 @@ class AuthorAdmin(ModelAdmin):
 admin.site.register(Book, BookAdmin)
 admin.site.register(AppUser, AppUserAdmin)
 admin.site.register(Author, AuthorAdmin)
+admin.site.register(Category, CategoryAdmin)

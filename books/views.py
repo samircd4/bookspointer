@@ -1,6 +1,6 @@
 from rest_framework import viewsets
-from .models import Book, AppUser
-from .serializers import BookSerializer, AppUserSerializer
+from .models import Book, AppUser, Category
+from .serializers import BookSerializer, AppUserSerializer, CategorySerializer
 from django.http import HttpResponse
 
 
@@ -18,3 +18,7 @@ class BookViewSet(viewsets.ModelViewSet):
 class AppUserViewSet(viewsets.ModelViewSet):
     queryset = AppUser.objects.all()
     serializer_class = AppUserSerializer
+
+class CategoryViewSet(viewsets.ModelViewSet):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer

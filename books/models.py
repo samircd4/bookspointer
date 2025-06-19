@@ -1,6 +1,18 @@
 from django.conf import settings
 from django.db import models
 
+
+
+
+class Category(models.Model):
+    id = models.AutoField(primary_key=True)
+    category_id = models.CharField(max_length=25)
+    category_name = models.CharField(max_length=500)
+    
+    def __str__(self):
+        return f'{self.category_id} {self.category_name}'
+    
+
 class Book(models.Model):
     book_id = models.AutoField(primary_key=True)
     title = models.CharField(max_length=255, unique=True)
@@ -8,7 +20,8 @@ class Book(models.Model):
     author = models.CharField(max_length=255, blank=True, null=True)
     author_id = models.IntegerField()
     category = models.CharField(max_length=255, blank=True, null=True)
-    category_id = models.IntegerField()
+    # category_id = models.IntegerField()
+    category_id = models.ForeignKey(Category, null=True, blank=True, on_delete=models.SET_NULL)
     is_posted = models.BooleanField(default=False)
     book_link = models.CharField(max_length=500)
     content = models.TextField()  # Stores HTML string
