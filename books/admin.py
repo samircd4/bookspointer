@@ -8,6 +8,7 @@ class BookAdmin(ModelAdmin):
     list_display = ('title', 'author', 'author_id', 'reviewed_by_shraiya', 'category', 'category_id', 'is_posted', 'book_link_display')
     search_fields = ('title', 'author', 'category', 'author_id')
     list_editable = ('reviewed_by_shraiya','category_id')
+    list_filter = ['is_posted']
     
     # Add column attributes for width
     attrs = {
@@ -23,14 +24,16 @@ class AppUserAdmin(ModelAdmin):
     list_display = ('first_name', 'last_name', 'email', 'password', 'has_profile_image', 'is_verified')
     list_editable = ('has_profile_image',)
     search_fields = ('first_name', 'last_name', 'email')
+    list_filter = ('has_profile_image', 'is_verified')
 
 
 class AuthorAdmin(ModelAdmin):
     list_display = ('author_id', 'author_name', 'is_scraped', 'author_link')
     search_fields = ('author_id', 'author_name')
+    list_editable = ['is_scraped']
 
 class CategoryAdmin(ModelAdmin):
-    list_display = ('category_id', 'category_name')
+    list_display = ('id', 'category_id', 'category_name')
     search_fields = ['category_id']
 
 # class CustomAdminSite(UnfoldAdminSite):
