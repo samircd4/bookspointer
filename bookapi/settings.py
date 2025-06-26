@@ -22,7 +22,7 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -35,7 +35,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    
+
     'rest_framework',
     'books',
 ]
@@ -82,15 +82,28 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+## Mysql Database connection
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': os.getenv('MYSQL_DATABASE', 'sarkgzjz_bookspointer'),
+#         'USER': os.getenv('MYSQL_USER', 'sarkgzjz_samircd4'),
+#         'PASSWORD': os.getenv('MYSQL_PASSWORD', 's72647D378#'),
+#         'HOST': os.getenv('MYSQL_HOST', '162.213.255.33'),
+#         'PORT': os.getenv('MYSQL_PORT', '3306'),
+#     }
+# }
+
+
 # Replace the SQLite DATABASES configuration with PostgreSQL:
 # DATABASES = {
 #     'default': dj_database_url.config(
 #         # Replace this value with your local database's connection string.
-#         default='postgresql://bookspointer_user:fLQHXlFrCqbVeHVxoNIdmhY0MlW96RaT@dpg-d16tr58dl3ps739r85i0-a.oregon-postgres.render.com/bookspointer',
+#         default='postgresql://postgres:mIjEcQbEKxNaDETSuvGHseccuhvyUNsZ@gondola.proxy.rlwy.net:17414/railway',
 #         conn_max_age=600
 #     )
 # }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
@@ -142,9 +155,6 @@ if not DEBUG:
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-
-
 
 
 UNFOLD = {

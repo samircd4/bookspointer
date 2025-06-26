@@ -8,7 +8,7 @@ class BookAdmin(ModelAdmin):
     list_display = ('title', 'author', 'author_id', 'reviewed_by_shraiya', 'category', 'category_id', 'is_posted', 'book_link_display')
     search_fields = ('title', 'author', 'category', 'author_id')
     list_editable = ('reviewed_by_shraiya','category_id')
-    list_filter = ['is_posted']
+    list_filter = ['is_posted','author', 'category']
     
     # Add column attributes for width
     attrs = {

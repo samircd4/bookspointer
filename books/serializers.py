@@ -2,7 +2,12 @@ from rest_framework import serializers
 from .models import Book, AppUser, Category, Author
 
 class BookSerializer(serializers.ModelSerializer):
-    category_id = serializers.CharField(source='category_id.category_id', read_only=True)
+    # category_id = serializers.CharField(source='category_id.category_id', read_only=True)
+    category_id = serializers.PrimaryKeyRelatedField(
+        queryset=Category.objects.all(),
+        required=False,
+        allow_null=True
+    )
     class Meta:
         model = Book
         fields = [
