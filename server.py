@@ -195,10 +195,10 @@ class BookAPI(BaseAPI):
         response = self._patch(f"books/{book_id}/", updated_data)
         if isinstance(response, dict) and response.get("status") == "error":
             print(
-                f"Failed to update book {book_id}: {response.get('message')}")
+                f"Failed to update book id {book_id}: {response.get('message')}")
             return {"success": False, "message": response.get("message")}
-        print(f"Book {book_id} updated successfully.")
-        return {"success": True, "message": f"Book {book_id} updated."}
+        print(f"Book id {book_id} updated successfully.")
+        return {"success": True, "message": f"Book id {book_id} updated."}
 
     def delete(self, book_id):
         """
@@ -342,8 +342,8 @@ class AuthorAPI(BaseAPI):
         except Exception:
             pass
         print(
-            f"Author created successfully. Name: {author.get('author_name')}")
-        return {"success": True, "message": f"Author '{author.get('author_name')}' created.", "id": obj_id}
+            f"Author created successfully. Name: {author_data.get('author_name')}")
+        return {"success": True, "message": f"Author '{author_data.get('author_name')}' created.", "id": obj_id}
 
     def update(self, author_id, updated_data):
         """
@@ -557,10 +557,9 @@ class TokenAPI(BaseAPI):
         import random
         response = self._get("users/")
         if response.status_code == 200:
-            tokens = response.json()
+            tokens = [token['token'] for token in response.json()]
             if isinstance(tokens, list):
                 random.shuffle(tokens)
-            tokens = [token['token'] for token in tokens if token.get('is_verified') == True]
             return tokens
         else:
             print(f"❌ Failed to retrieve tokens: {response.status_code}")

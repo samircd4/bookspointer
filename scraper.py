@@ -17,31 +17,18 @@ class BookScraper:
     categories, content, and metadata. It handles both single-page and multi-page books,
     with support for different category types and content extraction.
 
-    The scraper is designed to work with the ebanglalibrary.com website structure and
-    includes authentication handling, pagination support, and content aggregation
-    capabilities for multi-page books.
-
     Attributes:
-        headers (dict): HTTP headers for making requests to the website, configured
-                       to mimic a real browser session
-        cookies (dict): Session cookies for maintaining authentication and bypassing
-                       certain access restrictions
-        multi_page_links (list): List of book URLs that are known to have multiple
-                                content pages that should be processed separately
+        headers (dict): HTTP headers for making requests to the website
+        cookies (dict): Session cookies for maintaining authentication
     """
 
-    def __init__(self, multi_page_links: list):
+    def __init__(self):
         """
         Initialize the BookScraper with default headers and cookies.
 
         Sets up the necessary HTTP headers and cookies to mimic a real browser
         session for web scraping. This includes user agent, accept headers, and
         session cookies for authentication.
-
-        Args:
-            multi_page_links (list): A list of book URLs that should be processed
-                                   as multi-page books, where each page becomes
-                                   a separate book entry
         """
         self.headers = {
             "accept": "*/*",
@@ -60,7 +47,6 @@ class BookScraper:
             "cf_clearance": "UDM6zG5aQdnupSDm_pIrI0ahH3Qhf0C4OlzwVW3v9lc-1749711078-1.2.1.1-d6Cn4han6cxVdvXh8d2rCs94t44Ld6FDxpbHkRtKHfqp7kvMLSiNwJkjP_Y__l3tMmK4DA04X6WQG8hAav42mW6h3knRv6Tn_2XUgVAGngGmpizLslySbsm0riaopY33XFSRQ8nafhbavhdijYjzSI3JIbbsj1yywKSkFfloHhS0gPloasy7HFH8CNOlxF.lH7O7AsRJ7X5UMqJrmtk4LrAK4jskS5pp9vcOOIuo.hRqQ5NhlzFZklFpti22RVcmn1t463Z6DM8sAQbrlPObjp9qJYlaZo22uSHjLECc9uXeMy4cf_Xj8qjxPUTbOqpXmDM3qLHnC0563ZpCQHxLZBl2stE1Dr.gOaouTSAC_sw",
             "advanced_ads_visitor": '{"browser_width":1905}'
         }
-        self.multi_page_links = multi_page_links
     
     def remove_bangla_number_prefix(self, title):
         # Remove Bangla number + optional dot + optional whitespace from start
@@ -259,7 +245,7 @@ class BookScraper:
             print(f"An error occurred: {e}")
             return []
 
-    def get_book_details(self, book_info: dict, author_id: int) -> list:
+    def get_book_details(self, book_info: dict, author_id: int, multi_page: bool = False) -> list:
         """
         Scrape detailed information for a given book including content and metadata.
 
@@ -267,36 +253,33 @@ class BookScraper:
         category, series, content, and other metadata. It handles both single-page
         and multi-page books, aggregating content from all pages.
 
-        The method processes books differently based on whether they are in the
-        multi_page_links list:
-        - Multi-page books: Creates separate book entries for each content page
-        - Single-page books: Aggregates all content into a single book entry
-
         Args:
             book_info (dict): Dictionary containing basic book info:
                 - 'title': Book title
-                - 'author': Author name  
+                - 'author': Author name
                 - 'link': Book URL
-            author_id (int): The ID of the author for database association
+            author_id (int): The ID of the author.
+            multi_page (bool, optional): If True, creates separate book entries for each page.
+                                       If False, aggregates all content into a single book.
+                                       Defaults to False.
 
         Returns:
             list: A list of dictionaries containing detailed book information:
-                - 'book_id': Unique book identifier extracted from the page
-                - 'title': Book title (may be updated for multi-page books)
+                - 'book_id': Unique book identifier
+                - 'title': Book title
                 - 'author': Author name
-                - 'author_id': Author ID for database association
-                - 'category': List of category names
-                - 'category_id': Numeric category ID for database storage
-                - 'series': Series information or category as fallback
-                - 'content': Book content (aggregated for single-page, individual for multi-page)
-                - 'url': Book URL (original for single-page, page-specific for multi-page)
+                - 'author_id': Author ID
+                - 'category': List of categories
+                - 'category_id': Category ID
+                - 'series': Series information
+                - 'content': Aggregated book content or individual page content
+                - 'url': Book URL
 
         Note:
-            - For multi-page books: Creates separate entries for each content page
-            - For single-page books: Aggregates all content with HTML line breaks as separators
-            - Books with empty content are skipped to avoid creating empty entries
-            - Login-required books are logged and skipped
-            - Content is cleaned by removing interactive elements like buttons
+            For books with multiple pages:
+            - If multi_page=True: Creates separate book entries for each page with individual content
+            - If multi_page=False: Aggregates content from all pages with HTML line breaks (<br/>) as separators
+            - If content is empty, the book is skipped to avoid creating empty entries
         """
         books = []
         try:
@@ -335,31 +318,30 @@ class BookScraper:
                 'content': '',
                 'url': book_info['link']
             }
-            all_books_url = self.get_html_pages(book_info['link'])
-            for idx, book_url in enumerate(all_books_url, start=1):
+            
+            books_urls = self.get_html_pages(book_info['link'])
+            for idx, book_url in enumerate(books_urls, start=1):
                 new_content = self.get_book_content(book_url)
                 if new_content:
-                    if book_info['link'] in self.multi_page_links:
-                        book_copy = book.copy()
+                    if multi_page:
+                        book_copy = book.copy()  # or use copy.deepcopy(book) if nested dicts
                         book_copy['title'] = self.remove_bangla_number_prefix(new_content['title'])
                         book_copy['content'] = new_content['content']
                         book_copy['url'] = book_url
-                        # print(book_copy)
+                        print(book_copy)
                         books.append(book_copy)
                     else:
                         contents.append(new_content.get('content', ''))
 
                 print(
-                    f"Page Processed {idx}/{len(all_books_url)}: Author ID: {author_id}")
-
+                    f"Page Processed {idx}/{len(books_urls)}: Author ID: {author_id}")
+            
             book['content'] = '<br/>'.join(contents)
-
+            
             if book['content'] == '':
-                print('This book may have login required')
                 return books
 
             books.append(book)
-
             return books
         except requests.RequestException as e:
             print(f"An error occurred while fetching book details: {e}")
@@ -394,10 +376,6 @@ class BookScraper:
             title = html.css_first('div.ld-focus-content h1').text(strip=True)
             for button in content_div.css('button'):
                 button.decompose()
-            
-            for heading in content_div.css('div#ftwp-container'):
-                heading.decompose()
-            
             if content_div:
                 content_str = str(content_div.html)
                 return {'content': content_str, 'title': title}
